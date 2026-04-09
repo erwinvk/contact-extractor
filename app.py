@@ -384,10 +384,11 @@ def extract():
                 {
                     'type': 'text',
                     'text': (
-                        'Extract from this image: the surname/last name only (achternaam, NOT the first name), '
-                        'phone number (telefoon), and email address (email). '
-                        'Return ONLY valid JSON with exactly these keys: '
-                        '{"achternaam": "...", "telefoon": "...", "email": "..."}. '
+                        'This image contains Dutch contact/address information. '
+                        'Extract: (1) the person\'s surname/last name (achternaam) — this is the PERSON\'s family name, '
+                        'NOT a street name, city, or place name; the address will contain a street, postal code and city which you must ignore; '
+                        '(2) phone number (telefoon); (3) email address (email). '
+                        'Return ONLY valid JSON: {"achternaam": "...", "telefoon": "...", "email": "..."}. '
                         'Use null for any field not found. No explanation, just JSON.'
                     )
                 }
