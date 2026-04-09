@@ -281,8 +281,14 @@ HTML = r"""
                 });
 
                 if (!response.ok) {
-                    const err = await response.json();
-                    throw new Error(err.error || response.statusText);
+                    let msg = response.statusText;
+                    try {
+                        const err = await response.json();
+                        msg = err.error || msg;
+                    } catch {
+                        msg = await response.text().catch(() => msg);
+                    }
+                    throw new Error(msg);
                 }
 
                 currentData = await response.json();
@@ -360,7 +366,8 @@ def extract():
 
     client = anthropic.Anthropic(api_key=api_key)
 
-    message = client.messages.create(
+    try:
+        message = client.messages.create(
         model='claude-haiku-4-5-20251001',
         max_tokens=256,
         messages=[{
@@ -386,7 +393,9 @@ def extract():
                 }
             ]
         }]
-    )
+        )
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
     text = message.content[0].text.strip()
     match = re.search(r'\{[^{}]*\}', text, re.DOTALL)
